@@ -14,8 +14,4 @@ class BLASTER_API ABlasterController : public APlayerController
 {
 	GENERATED_BODY()
 
-
-public:
-
-	
 };

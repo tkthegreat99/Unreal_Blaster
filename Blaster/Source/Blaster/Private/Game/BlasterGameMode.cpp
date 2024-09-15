@@ -2,4 +2,11 @@
 
 
 #include "Game/BlasterGameMode.h"
+#include "Controller/BlasterController.h"
+#include "Character/BlasterCharacter.h"
 
+ABlasterGameMode::ABlasterGameMode()
+{
+	PlayerControllerClass = ABlasterController::StaticClass();
+	DefaultPawnClass = ABlasterCharacter::StaticClass();
+}

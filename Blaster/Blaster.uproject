@@ -46,12 +46,16 @@
 			]
 		},
 		{
-			"Name": "MultiplayerSessions",
-			"Enabled": false
+			"Name": "OnlineSubsystemSteam",
+			"Enabled": true
 		},
 		{
-			"Name": "OnlineSubsystem",
-			"Enabled": false
+			"Name": "OnlineFramework",
+			"Enabled": true
+		},
+		{
+			"Name": "OnlineServicesNull",
+			"Enabled": true
 		}
 	]
 }

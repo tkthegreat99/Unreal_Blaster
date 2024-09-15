@@ -10,6 +10,7 @@
 class USpringArmComponent;
 class UInputMappingContext;
 class UCameraComponent;
+class UBInputConfig;
 
 UCLASS()
 class BLASTER_API ABlasterCharacter : public ACharacter
@@ -37,13 +38,25 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess))
 	TObjectPtr<UInputMappingContext> PlayerCharacterInputMappingContext;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess))
+	TObjectPtr<UBInputConfig> PlayerCharacterInputConfig;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess))
+	float ForwardInputValue;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess))
+	float RightInputValue;
+
+
+
 private:
 
 	void InputMove(const FInputActionValue& InValue);
 	void InputLook(const FInputActionValue& InValue);
-	void InputJump(const FInputActionValue& InValue);
-
 	
+
+
+
 
 	
 	

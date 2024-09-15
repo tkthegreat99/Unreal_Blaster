@@ -6,6 +6,8 @@
 #include "GameFramework/GameModeBase.h"
 #include "BlasterGameMode.generated.h"
 
+class ABlasterController;
+
 /**
  * 
  */
@@ -13,5 +15,11 @@ UCLASS()
 class BLASTER_API ABlasterGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
+
+public:
+
+	ABlasterGameMode();
+
+
 	
 };
