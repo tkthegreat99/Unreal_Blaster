@@ -11,6 +11,7 @@ class USpringArmComponent;
 class UInputMappingContext;
 class UCameraComponent;
 class UBInputConfig;
+class UWidgetComponent;
 
 UCLASS()
 class BLASTER_API ABlasterCharacter : public ACharacter
@@ -47,6 +48,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess))
 	float RightInputValue;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess))
+	TObjectPtr<UWidgetComponent> OverheadWidget;
 
 
 private:
