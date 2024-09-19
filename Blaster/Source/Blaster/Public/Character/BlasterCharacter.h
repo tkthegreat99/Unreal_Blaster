@@ -28,6 +28,7 @@ public:
 	void SetOverlappingWeapon(AWeapon* Weapon);
 	virtual void PostInitializeComponents() override;
 	bool IsWeaponEquipped();
+	bool IsAiming();
 protected:
 	
 	virtual void BeginPlay() override;
@@ -72,7 +73,8 @@ private:
 	void InputLook(const FInputActionValue& InValue);
 	void InputEquip(const FInputActionValue& InValue);
 	void InputCrouch(const FInputActionValue& InValue);
-
+	void InputAimStart(const FInputActionValue& InValue);
+	void InputAimEnd(const FInputActionValue& InValue);
 
 
 	

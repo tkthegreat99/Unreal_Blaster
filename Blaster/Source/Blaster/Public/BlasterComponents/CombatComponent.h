@@ -23,9 +23,18 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+	void SetAiming(bool bIsAiming);
+
+	UFUNCTION(Server, Reliable)
+	void ServerSetAiming(bool bIsAiming);
+
+protected:
+
+	TObjectPtr<ABlasterCharacter> Character;
 
 	UPROPERTY(Replicated)
 	TObjectPtr<AWeapon> EquippedWeapon;
 		
-	TObjectPtr<ABlasterCharacter> Character;
+	UPROPERTY(Replicated)
+	uint8 bAiming : 1;
 };

@@ -128,6 +128,22 @@ void ABlasterCharacter::InputCrouch(const FInputActionValue& InValue)
 	}
 }
 
+void ABlasterCharacter::InputAimStart(const FInputActionValue& InValue)
+{
+	if (Combat)
+	{
+		Combat->SetAiming(true);
+	}
+}
+
+void ABlasterCharacter::InputAimEnd(const FInputActionValue& InValue)
+{
+	if (Combat)
+	{
+		Combat->SetAiming(false);
+	}
+}
+
 void ABlasterCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -146,6 +162,8 @@ void ABlasterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 		EnhancedInputComponent->BindAction(PlayerCharacterInputConfig->Jump, ETriggerEvent::Started, this, &ACharacter::Jump);
 		EnhancedInputComponent->BindAction(PlayerCharacterInputConfig->Equip, ETriggerEvent::Started, this, &ThisClass::InputEquip);
 		EnhancedInputComponent->BindAction(PlayerCharacterInputConfig->Crouch, ETriggerEvent::Started, this, &ThisClass::InputCrouch);
+		EnhancedInputComponent->BindAction(PlayerCharacterInputConfig->Aim, ETriggerEvent::Started, this, &ThisClass::InputAimStart);
+		EnhancedInputComponent->BindAction(PlayerCharacterInputConfig->Aim, ETriggerEvent::Completed, this, &ThisClass::InputAimEnd);
 	}
 
 
@@ -190,5 +208,10 @@ void ABlasterCharacter::PostInitializeComponents()
 bool ABlasterCharacter::IsWeaponEquipped()
 {
 	return (Combat && Combat->EquippedWeapon);
+}
+
+bool ABlasterCharacter::IsAiming()
+{
+	return (Combat && Combat->bAiming);
 }
 
