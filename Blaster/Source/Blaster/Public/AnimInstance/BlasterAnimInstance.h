@@ -39,4 +39,7 @@ private:
 
 	UPROPERTY(BlueprintReadOnly, Category = "Movement", meta = (AllowPrivateAccess))
 	uint8 bWeaponEquipped : 1;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Movement", meta = (AllowPrivateAccess))
+	uint8 bIsCrouched : 1;
 };

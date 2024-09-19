@@ -71,7 +71,7 @@ private:
 	void InputMove(const FInputActionValue& InValue);
 	void InputLook(const FInputActionValue& InValue);
 	void InputEquip(const FInputActionValue& InValue);
-
+	void InputCrouch(const FInputActionValue& InValue);
 
 
 
