@@ -27,6 +27,7 @@ public:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	void SetOverlappingWeapon(AWeapon* Weapon);
 	virtual void PostInitializeComponents() override;
+	bool IsWeaponEquipped();
 protected:
 	
 	virtual void BeginPlay() override;

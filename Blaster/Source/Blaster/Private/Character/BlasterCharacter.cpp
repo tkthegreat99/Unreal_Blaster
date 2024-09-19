@@ -172,3 +172,8 @@ void ABlasterCharacter::PostInitializeComponents()
 	}
 }
 
+bool ABlasterCharacter::IsWeaponEquipped()
+{
+	return (Combat && Combat->EquippedWeapon);
+}
+

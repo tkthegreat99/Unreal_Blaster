@@ -36,4 +36,7 @@ private:
 
 	UPROPERTY(BlueprintReadOnly, Category = "Movement", meta = (AllowPrivateAccess))
 	uint8 bIsAccelerating : 1;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Movement", meta = (AllowPrivateAccess))
+	uint8 bWeaponEquipped : 1;
 };
