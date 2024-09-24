@@ -40,4 +40,10 @@ protected:
 		
 	UPROPERTY(Replicated)
 	uint8 bAiming : 1;
+
+	UPROPERTY(EditAnywhere)
+	float BaseWalkSpeed;
+	
+	UPROPERTY(EditAnywhere)
+	float AimWalkSpeed;
 };
