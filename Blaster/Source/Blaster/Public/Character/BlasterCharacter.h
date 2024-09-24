@@ -29,6 +29,9 @@ public:
 	virtual void PostInitializeComponents() override;
 	bool IsWeaponEquipped();
 	bool IsAiming();
+	FORCEINLINE float GetAO_Yaw() const { return AO_Yaw; }
+	FORCEINLINE float GetAO_Pitch() const { return AO_Pitch; }
+	AWeapon* GetEquippedWeapon();
 protected:
 	
 	virtual void BeginPlay() override;
@@ -67,6 +70,10 @@ protected:
 
 	UFUNCTION(Server, Reliable)
 	void ServerEquipButtonPressed();
+
+	float AO_Yaw;
+	float AO_Pitch;
+	FRotator StartingAimRotation;
 private:
 
 	void InputMove(const FInputActionValue& InValue);
@@ -75,7 +82,7 @@ private:
 	void InputCrouch(const FInputActionValue& InValue);
 	void InputAimStart(const FInputActionValue& InValue);
 	void InputAimEnd(const FInputActionValue& InValue);
-
+	void AimOffset(float DeltaTime);
 
 	
 	
