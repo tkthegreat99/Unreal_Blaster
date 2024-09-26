@@ -7,6 +7,7 @@
 #include "Components/WidgetComponent.h"
 #include "Character/BlasterCharacter.h"
 #include "Net/UnrealNetwork.h"
+#include "Animation/AnimationAsset.h"
 
 AWeapon::AWeapon()
 {
@@ -110,3 +111,10 @@ void AWeapon::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeP
 	DOREPLIFETIME(AWeapon, WeaponState);
 }
 
+void AWeapon::Fire()
+{
+	if (FireAnimation)
+	{
+		WeaponMesh->PlayAnimation(FireAnimation, false);
+	}
+}

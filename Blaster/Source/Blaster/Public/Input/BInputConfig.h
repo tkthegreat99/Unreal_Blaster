@@ -34,4 +34,8 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TObjectPtr<UInputAction> Aim;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<UInputAction> Fire;
+
 };

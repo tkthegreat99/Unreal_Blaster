@@ -15,6 +15,8 @@
 #include "Components/CapsuleComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Weapon/Weapon.h"
+#include "AnimInstance/BlasterAnimInstance.h"
+#include "Animation/AnimInstance.h"
 
 ABlasterCharacter::ABlasterCharacter()
 {
@@ -41,8 +43,11 @@ ABlasterCharacter::ABlasterCharacter()
 
 	GetCharacterMovement()->NavAgentProps.bCanCrouch = true;
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
+	GetCharacterMovement()->RotationRate = FRotator(0.f, 0.f, 850.f);
 
 	TurningInPlace = ETurningInPlace::ETIP_NotTurning;
+	NetUpdateFrequency = 66.f;
+	MinNetUpdateFrequency = 33.f;
 }
 
 void ABlasterCharacter::BeginPlay()
@@ -172,6 +177,22 @@ void ABlasterCharacter::InputAimEnd(const FInputActionValue& InValue)
 	}
 }
 
+void ABlasterCharacter::InputFirePressed(const FInputActionValue& InValue)
+{
+	if (Combat)
+	{
+		Combat->FireButtonPressed(true);
+	}
+}
+
+void ABlasterCharacter::InputFireReleased(const FInputActionValue& InValue)
+{
+	if (Combat)
+	{
+		Combat->FireButtonPressed(false);
+	}
+}
+
 void ABlasterCharacter::AimOffset(float DeltaTime)
 {
 	if (Combat && Combat->EquippedWeapon == nullptr) return;
@@ -209,6 +230,18 @@ void ABlasterCharacter::AimOffset(float DeltaTime)
 	}
 }
 
+void ABlasterCharacter::Jump()
+{
+	if (bIsCrouched)
+	{
+		UnCrouch();
+	}
+	else
+	{
+		Super::Jump();
+	}
+}
+
 void ABlasterCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -225,11 +258,13 @@ void ABlasterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	{
 		EnhancedInputComponent->BindAction(PlayerCharacterInputConfig->Move, ETriggerEvent::Triggered, this, &ThisClass::InputMove);
 		EnhancedInputComponent->BindAction(PlayerCharacterInputConfig->Look, ETriggerEvent::Triggered, this, &ThisClass::InputLook);
-		EnhancedInputComponent->BindAction(PlayerCharacterInputConfig->Jump, ETriggerEvent::Started, this, &ACharacter::Jump);
+		EnhancedInputComponent->BindAction(PlayerCharacterInputConfig->Jump, ETriggerEvent::Started, this, &ThisClass::Jump);
 		EnhancedInputComponent->BindAction(PlayerCharacterInputConfig->Equip, ETriggerEvent::Started, this, &ThisClass::InputEquip);
 		EnhancedInputComponent->BindAction(PlayerCharacterInputConfig->Crouch, ETriggerEvent::Started, this, &ThisClass::InputCrouch);
 		EnhancedInputComponent->BindAction(PlayerCharacterInputConfig->Aim, ETriggerEvent::Started, this, &ThisClass::InputAimStart);
 		EnhancedInputComponent->BindAction(PlayerCharacterInputConfig->Aim, ETriggerEvent::Completed, this, &ThisClass::InputAimEnd);
+		EnhancedInputComponent->BindAction(PlayerCharacterInputConfig->Fire, ETriggerEvent::Started, this, &ThisClass::InputFirePressed);
+		EnhancedInputComponent->BindAction(PlayerCharacterInputConfig->Fire, ETriggerEvent::Completed, this, &ThisClass::InputFireReleased);
 	}
 
 
@@ -285,5 +320,18 @@ AWeapon* ABlasterCharacter::GetEquippedWeapon()
 {
 	if (Combat == nullptr) return nullptr;
 	return Combat->EquippedWeapon;
+}
+
+void ABlasterCharacter::PlayFireMontage(bool bAiming)
+{
+	if (Combat == nullptr || Combat->EquippedWeapon == nullptr) return;
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance && FireWeaponMontage)
+	{
+		AnimInstance->Montage_Play(FireWeaponMontage);
+		FName SectionName;
+		SectionName = bAiming ? FName("RifleAim") : FName("RifleHip");
+		AnimInstance->Montage_JumpToSection(SectionName);
+	}
 }
 

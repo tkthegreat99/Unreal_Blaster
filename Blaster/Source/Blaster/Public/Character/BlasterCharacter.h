@@ -15,6 +15,7 @@ class UBInputConfig;
 class UWidgetComponent;
 class AWeapon;
 class UCombatComponent;
+class UAnimMontage;
 
 UCLASS()
 class BLASTER_API ABlasterCharacter : public ACharacter
@@ -26,14 +27,18 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-	void SetOverlappingWeapon(AWeapon* Weapon);
+	
+public:
+
 	virtual void PostInitializeComponents() override;
+	void SetOverlappingWeapon(AWeapon* Weapon);
 	bool IsWeaponEquipped();
 	bool IsAiming();
 	FORCEINLINE float GetAO_Yaw() const { return AO_Yaw; }
 	FORCEINLINE float GetAO_Pitch() const { return AO_Pitch; }
 	FORCEINLINE ETurningInPlace GetTurningInPlace() const { return TurningInPlace;}
 	AWeapon* GetEquippedWeapon();
+	void PlayFireMontage(bool bAiming);
 protected:
 	
 	virtual void BeginPlay() override;
@@ -80,6 +85,9 @@ protected:
 
 	ETurningInPlace TurningInPlace;
 	void TurnInPlace(float DeltaTime);
+
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	TObjectPtr<UAnimMontage> FireWeaponMontage;
 private:
 
 	void InputMove(const FInputActionValue& InValue);
@@ -88,8 +96,10 @@ private:
 	void InputCrouch(const FInputActionValue& InValue);
 	void InputAimStart(const FInputActionValue& InValue);
 	void InputAimEnd(const FInputActionValue& InValue);
+	void InputFirePressed(const FInputActionValue& InValue);
+	void InputFireReleased(const FInputActionValue& InValue);
 	void AimOffset(float DeltaTime);
-
+	virtual void Jump() override;
 	
 	
 

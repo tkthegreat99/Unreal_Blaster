@@ -31,6 +31,15 @@ protected:
 	UFUNCTION()
 	void OnRep_EquippedWeapon();
 
+	UFUNCTION()
+	void FireButtonPressed(bool bPressed);
+
+	UFUNCTION(Server, Reliable)
+	void ServerFire();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastFire();
+
 protected:
 
 	TObjectPtr<ABlasterCharacter> Character;
@@ -46,4 +55,6 @@ protected:
 	
 	UPROPERTY(EditAnywhere)
 	float AimWalkSpeed;
+
+	bool bFireButtonPressed;
 };

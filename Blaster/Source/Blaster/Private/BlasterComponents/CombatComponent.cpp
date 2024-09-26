@@ -7,6 +7,7 @@
 #include "Components/SphereComponent.h"
 #include "Net/UnrealNetwork.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Animation/AnimMontage.h"
 
 UCombatComponent::UCombatComponent()
 {
@@ -57,6 +58,34 @@ void UCombatComponent::OnRep_EquippedWeapon()
 		Character->bUseControllerRotationYaw = true;
 	}
 }
+
+void UCombatComponent::FireButtonPressed(bool bPressed)
+{
+	
+	bFireButtonPressed = bPressed;
+
+	if (bFireButtonPressed)
+	{
+		ServerFire();
+	}
+	
+}
+
+void UCombatComponent::ServerFire_Implementation()
+{
+	MulticastFire();
+}
+
+void UCombatComponent::MulticastFire_Implementation()
+{
+	if (EquippedWeapon == nullptr) return;
+	if (Character)
+	{
+		Character->PlayFireMontage(bAiming);
+		EquippedWeapon->Fire();
+	}
+}
+
 
 
 
