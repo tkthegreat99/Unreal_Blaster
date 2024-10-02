@@ -61,4 +61,6 @@ protected:
 	float AimWalkSpeed;
 
 	bool bFireButtonPressed;
+
+	FVector HitTarget;
 };
