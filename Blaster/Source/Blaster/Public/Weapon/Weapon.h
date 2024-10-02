@@ -10,13 +10,16 @@ class USkeletalMeshComponent;
 class USphereComponent;
 class UWidgetComponent;
 class UAnimationAsset;
+class ACasing;
 
+
+/* 무기 상태 */
 UENUM(BlueprintType)
 enum class EWeaponState : uint8
 {
-	EWS_Initial UMETA(DisplayName = "Initial State"),
-	EWS_Equipped UMETA(DisplayName = "Equipped"),
-	EWS_Dropped UMETA(DisplayName = "Dropped"),
+	EWS_Initial UMETA(DisplayName = "Initial State"), // 초기 상태
+	EWS_Equipped UMETA(DisplayName = "Equipped"), // 장착된 상태
+	EWS_Dropped UMETA(DisplayName = "Dropped"), // 장착 해제된 상태
 
 	EWS_MAX UMETA(DisplayName = "DefaultMAX")
 };
@@ -31,9 +34,14 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	void ShowPickupWidget(bool bShowWidget);
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
+	//Weapon을 상속받는 ProjectileWeapon에서 Fire 오버라이딩
 	virtual void Fire(const FVector& HitTarget);
 protected:
 	virtual void BeginPlay() override;
+
+
+	//오버랩 이벤트///
 
 	UFUNCTION()
 	virtual void OnSphereOverlap(
@@ -53,7 +61,7 @@ protected:
 		int32 OtherBodyIndex
 	);
 
-
+	
 
 	UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
 	TObjectPtr<USkeletalMeshComponent> WeaponMesh;
@@ -73,6 +81,8 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Weapon Properties")
 	TObjectPtr<UAnimationAsset> FireAnimation;
 
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<ACasing> CasingClass;
 
 public:
 	void SetWeaponState(EWeaponState State);

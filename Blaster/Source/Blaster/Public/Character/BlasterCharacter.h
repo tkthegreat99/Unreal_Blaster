@@ -31,20 +31,43 @@ public:
 public:
 
 	virtual void PostInitializeComponents() override;
+
+	/* 캐릭터가 오버래핑하고 있는 무기 Set*/
 	void SetOverlappingWeapon(AWeapon* Weapon);
+
+	/* 현재 무기를 착용하고 있는지*/
 	bool IsWeaponEquipped();
+
+	/* 현재 착용중인 무기 Get */
+	AWeapon* GetEquippedWeapon();
+
+	/* 현재 Aim 하고 있는지*/
 	bool IsAiming();
+
+	/* AimOffset을 위한 Yaw, Pitch Getter*/
 	FORCEINLINE float GetAO_Yaw() const { return AO_Yaw; }
 	FORCEINLINE float GetAO_Pitch() const { return AO_Pitch; }
+
+	/* Turning을 위해 ETurningPlace Getter */
 	FORCEINLINE ETurningInPlace GetTurningInPlace() const { return TurningInPlace;}
-	AWeapon* GetEquippedWeapon();
+
+	
 	void PlayFireMontage(bool bAiming);
 protected:
 	
 	virtual void BeginPlay() override;
 
+	
 	UFUNCTION()
 	void OnRep_OverlappingWeapon(AWeapon* LastWeapon);
+
+	/* Server RPC - 무기 장착 버튼 눌렀을 때 (E) */
+	UFUNCTION(Server, Reliable)
+	void ServerEquipButtonPressed();
+
+	/* 현재 캐릭터가 Overlapping 하고 있는 Weapon */
+	UPROPERTY(ReplicatedUsing = OnRep_OverlappingWeapon)
+	TObjectPtr<AWeapon> OverlappingWeapon;
 
 protected:
 
@@ -69,27 +92,27 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess))
 	TObjectPtr<UWidgetComponent> OverheadWidget;
 
-	UPROPERTY(ReplicatedUsing = OnRep_OverlappingWeapon)
-	TObjectPtr<AWeapon> OverlappingWeapon;
-
+	/* CombatComponent */
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UCombatComponent> Combat;
 
-	UFUNCTION(Server, Reliable)
-	void ServerEquipButtonPressed();
+	/* 발사 Montage */
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	TObjectPtr<UAnimMontage> FireWeaponMontage;
 
 	float AO_Yaw;
 	float InterpAO_Yaw;
 	float AO_Pitch;
 	FRotator StartingAimRotation;
 
+	/* 제자리 회전 */
 	ETurningInPlace TurningInPlace;
 	void TurnInPlace(float DeltaTime);
 
-	UPROPERTY(EditAnywhere, Category = "Combat")
-	TObjectPtr<UAnimMontage> FireWeaponMontage;
+	
 private:
 
+	/* Input */
 	void InputMove(const FInputActionValue& InValue);
 	void InputLook(const FInputActionValue& InValue);
 	void InputEquip(const FInputActionValue& InValue);

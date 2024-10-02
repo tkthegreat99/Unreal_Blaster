@@ -4,6 +4,7 @@
 #include "Components/ActorComponent.h"
 #include "CombatComponent.generated.h"
 
+/* ÃÑ »ç°Å¸® */
 #define TRACE_LENGTH 80000.f
 
 class AWeapon;
@@ -25,13 +26,18 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+	
+	UFUNCTION()
+	void OnRep_EquippedWeapon();
+	
+	/* Aiming */
+
 	void SetAiming(bool bIsAiming);
 
 	UFUNCTION(Server, Reliable)
 	void ServerSetAiming(bool bIsAiming);
 
-	UFUNCTION()
-	void OnRep_EquippedWeapon();
+	/* Fire */
 
 	UFUNCTION()
 	void FireButtonPressed(bool bPressed);
@@ -42,6 +48,7 @@ protected:
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastFire(const FVector_NetQuantize& TraceHitTarget);
 
+	/* Trace */
 	void TraceUnderCrosshairs(FHitResult& TraceHitResult);
 
 protected:
