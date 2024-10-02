@@ -6,6 +6,7 @@
 #include "Weapon/Weapon.h"
 #include "ProjectileWeapon.generated.h"
 
+
 /**
  * 
  */
@@ -19,5 +20,6 @@ public:
 private:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class AProjectile> ProjectileClass;
+	
 	
 };
