@@ -10,6 +10,8 @@
 class AWeapon;
 class ABlasterCharacter;
 class USphereComponent;
+class ABlasterMainController;
+class ABlasterHUD;
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -51,9 +53,13 @@ protected:
 	/* Trace */
 	void TraceUnderCrosshairs(FHitResult& TraceHitResult);
 
+	void SetHUDCrosshairs(float DeltaTime);
+
 protected:
 
 	TObjectPtr<ABlasterCharacter> Character;
+	TObjectPtr<ABlasterMainController> Controller;
+	TObjectPtr<ABlasterHUD> HUD;
 
 	UPROPERTY(ReplicatedUsing = OnRep_EquippedWeapon)
 	TObjectPtr<AWeapon> EquippedWeapon;

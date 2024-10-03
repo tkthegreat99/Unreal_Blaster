@@ -11,6 +11,7 @@
 #include "Weapon/Casing.h"
 #include "Engine/SkeletalMeshSocket.h"
 
+
 AWeapon::AWeapon()
 {
 	PrimaryActorTick.bCanEverTick = false;

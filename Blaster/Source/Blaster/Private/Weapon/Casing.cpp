@@ -18,6 +18,7 @@ ACasing::ACasing()
 	ShellEjectionImpulse = 10.f;
 }
 
+/* 만들어지면 바로 앞으로 나가게 .*/
 void ACasing::BeginPlay()
 {
 	Super::BeginPlay();
@@ -26,6 +27,7 @@ void ACasing::BeginPlay()
 	CasingMesh->AddImpulse(GetActorForwardVector() * ShellEjectionImpulse);
 }
 
+/* 부딪히면 충돌 소리와 함께 액터 삭제.*/
 void ACasing::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	if (ShellSound)

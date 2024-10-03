@@ -23,12 +23,16 @@ protected:
 	UFUNCTION()
 	virtual void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
+
+	/* ≈∫«« ∏ﬁΩ¨ */
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UStaticMeshComponent> CasingMesh;
 
+	/* ≈∫«« πË√‚ ¡§µµ */
 	UPROPERTY(EditAnywhere)
 	float ShellEjectionImpulse;
 
+	/* ≈∫«« º“∏Æ */
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<USoundCue> ShellSound;
 

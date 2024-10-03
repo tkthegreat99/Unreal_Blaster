@@ -11,6 +11,7 @@ class USphereComponent;
 class UWidgetComponent;
 class UAnimationAsset;
 class ACasing;
+class UTexture2D;
 
 
 /* 무기 상태 */
@@ -37,6 +38,26 @@ public:
 
 	//Weapon을 상속받는 ProjectileWeapon에서 Fire 오버라이딩
 	virtual void Fire(const FVector& HitTarget);
+
+
+public:
+	/* 크로스헤어 텍스쳐 */
+
+	UPROPERTY(EditAnywhere, Category = Crosshairs)
+	TObjectPtr<UTexture2D> CrosshairsCenter;
+
+	UPROPERTY(EditAnywhere, Category = Crosshairs)
+	TObjectPtr<UTexture2D> CrosshairsLeft;
+
+	UPROPERTY(EditAnywhere, Category = Crosshairs)
+	TObjectPtr<UTexture2D> CrosshairsRight;
+
+	UPROPERTY(EditAnywhere, Category = Crosshairs)
+	TObjectPtr<UTexture2D> CrosshairsTop;
+
+	UPROPERTY(EditAnywhere, Category = Crosshairs)
+	TObjectPtr<UTexture2D> CrosshairsBottom;
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -83,6 +104,8 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<ACasing> CasingClass;
+
+
 
 
 public:
