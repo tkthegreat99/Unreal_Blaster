@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Weapon의 자손 클래스.
 
 
 #include "Weapon/ProjectileWeapon.h"
@@ -13,6 +13,8 @@ void AProjectileWeapon::Fire(const FVector& HitTarget)
 
 	APawn* InstigatorPawn = Cast<APawn>(GetOwner());
 
+	// Socket에서 Projectile 클래스 생성.
+	// Blueprint에서 Projectile의 속도 설정.
 	const USkeletalMeshSocket* MuzzleFlashSocket = GetWeaponMesh()->GetSocketByName(FName("MuzzleFlash"));
 	if (MuzzleFlashSocket)
 	{

@@ -45,6 +45,7 @@ void AProjectile::BeginPlay()
 			EAttachLocation::KeepWorldPosition
 		);
 	}
+	//서버에서 OnHit 이벤트 생성.
 	if (HasAuthority())
 	{
 		CollisionBox->OnComponentHit.AddDynamic(this, &AProjectile::OnHit);
@@ -63,6 +64,7 @@ void AProjectile::Tick(float DeltaTime)
 
 }
 
+//Destroy가 되면 불러짐.
 void AProjectile::Destroyed()
 {
 	Super::Destroyed();

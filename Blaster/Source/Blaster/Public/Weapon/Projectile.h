@@ -30,18 +30,20 @@ protected:
 	virtual void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
 protected:
-
+	// 충돌 검사 Collision
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UBoxComponent> CollisionBox;
 	
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UProjectileMovementComponent> ProjectileMovementComponent;
 
+	/*  Tracer  */
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UParticleSystem> Tracer;
 
 	TObjectPtr<UParticleSystemComponent> TracerComponent;
 
+	/*  충돌 효과  */
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UParticleSystem> ImpactParticles;
 

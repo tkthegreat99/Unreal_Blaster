@@ -9,6 +9,7 @@
 #include "Net/UnrealNetwork.h"
 #include "Animation/AnimationAsset.h"
 #include "Weapon/Casing.h"
+#include "Engine/SkeletalMeshSocket.h"
 
 AWeapon::AWeapon()
 {
@@ -113,9 +114,6 @@ void AWeapon::OnRep_WeaponState()
 	}
 }
 
-
-
-
 void AWeapon::ShowPickupWidget(bool bShowWidget)
 {
 	if (IsValid(PickupWidget) == true)
@@ -134,6 +132,21 @@ void AWeapon::Fire(const FVector& HitTarget)
 	}
 	if (CasingClass)
 	{
+		const USkeletalMeshSocket* AmmoejectSocket = WeaponMesh->GetSocketByName(FName("AmmoEject"));
+		if (AmmoejectSocket)
+		{
+			FTransform SocketTransform = AmmoejectSocket->GetSocketTransform(GetWeaponMesh());
 
+			FActorSpawnParameters SpawnParams;
+			UWorld* World = GetWorld();
+			if (World)
+			{
+				World->SpawnActor<ACasing>(
+					CasingClass,
+					SocketTransform.GetLocation(),
+					SocketTransform.GetRotation().Rotator()
+				);
+			}
+		}
 	}
 }
