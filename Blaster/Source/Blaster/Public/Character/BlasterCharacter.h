@@ -112,7 +112,11 @@ protected:
 	ETurningInPlace TurningInPlace;
 	void TurnInPlace(float DeltaTime);
 
+	void HideCameraIfCharacterClose();
 	
+	UPROPERTY(EditAnywhere)
+	float CameraThreshold = 200.f;
+
 private:
 
 	/* Input */
