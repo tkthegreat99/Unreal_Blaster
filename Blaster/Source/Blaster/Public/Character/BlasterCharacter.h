@@ -50,6 +50,8 @@ public:
 
 	/* Turning¿ª ¿ß«ÿ ETurningPlace Getter */
 	FORCEINLINE ETurningInPlace GetTurningInPlace() const { return TurningInPlace;}
+	
+	FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
 	
 	void PlayFireMontage(bool bAiming);
