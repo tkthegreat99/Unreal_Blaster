@@ -90,7 +90,9 @@ protected:
 
 	void InterpFOV(float DeltaTime);
 
-
+	/* 크로스헤어 퍼짐 관련 인자  */
 	float CrossHairVelocityFactor;
 	float CrossHairInAirFactor;
+	float CrossHairAimFactor;
+	float CrossHairShootingFactor;
 };

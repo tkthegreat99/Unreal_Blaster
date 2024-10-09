@@ -188,8 +188,25 @@ void UCombatComponent::SetHUDCrosshairs(float DeltaTime)
 				CrossHairInAirFactor = FMath::FInterpTo(CrossHairInAirFactor, 0.f, DeltaTime, 30.f);
 			}
 
+			// 조준 할 때 크로스 헤어 모이기 
+			if (bAiming)
+			{
+				CrossHairAimFactor = FMath::FInterpTo(CrossHairAimFactor, 0.58f, DeltaTime, 30.f);
+			}
+			else
+			{
+				CrossHairAimFactor = FMath::FInterpTo(CrossHairAimFactor, 0.f, DeltaTime, 30.f);
+			}
 
-			HUDPackage.CrosshairSpread = CrossHairVelocityFactor + CrossHairInAirFactor;
+			CrossHairShootingFactor = FMath::FInterpTo(CrossHairShootingFactor, 0.f, DeltaTime, 40.f);
+
+			/* 크로스 헤어의 퍼짐 정도 계산 */
+			HUDPackage.CrosshairSpread =
+				0.5f +
+				CrossHairVelocityFactor +
+				CrossHairInAirFactor -
+				CrossHairAimFactor + 
+				CrossHairShootingFactor;
 
 			HUD->SetHUDPackage(HUDPackage);
 		}
@@ -234,7 +251,13 @@ void UCombatComponent::FireButtonPressed(bool bPressed)
 
 		//Trace한 HitResult결과를 ServerFire에 전달
 		ServerFire(HitResult.ImpactPoint);
+
+		if (EquippedWeapon)
+		{
+			CrossHairShootingFactor = 0.75f;
+		}
 	}
+
 }
 
 // FVector_NetQuantize& : 3차원 벡터의 데이터를 압축하여 네트워크 트래픽을 절약하기 위해 사용
