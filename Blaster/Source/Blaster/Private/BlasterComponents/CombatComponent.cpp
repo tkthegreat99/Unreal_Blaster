@@ -134,6 +134,14 @@ void UCombatComponent::TraceUnderCrosshairs(FHitResult& TraceHitResult)
 			End,
 			ECollisionChannel::ECC_Visibility
 		);
+		if (TraceHitResult.GetActor() && TraceHitResult.GetActor()->Implements<UInteractWithCrossHairsInterface>())
+		{
+			HUDPackage.CrosshairsColor = FLinearColor::Red;
+		}
+		else
+		{
+			HUDPackage.CrosshairsColor = FLinearColor::White;
+		}
 	}
 
 
@@ -147,7 +155,7 @@ void UCombatComponent::SetHUDCrosshairs(float DeltaTime)
 	if (Controller)
 	{
 		HUD = HUD == nullptr ? Cast<ABlasterHUD>(Controller->GetHUD()) : HUD;
-		FHUDPackage HUDPackage;
+	
 		if (HUD)
 		{
 			//장착될 무기가 있을 때 Crosshair 표시

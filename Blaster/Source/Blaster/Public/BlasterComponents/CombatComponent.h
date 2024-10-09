@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Widget/BlasterHUD.h"
 #include "CombatComponent.generated.h"
 
 /* ÃÑ »ç°Å¸® */
@@ -77,6 +78,7 @@ protected:
 
 	FVector HitTarget;
 
+	FHUDPackage HUDPackage;
 
 	float DefaultFOV;
 
