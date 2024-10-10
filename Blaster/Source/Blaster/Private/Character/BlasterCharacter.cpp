@@ -17,6 +17,7 @@
 #include "Weapon/Weapon.h"
 #include "AnimInstance/BlasterAnimInstance.h"
 #include "Animation/AnimInstance.h"
+#include "Blaster/Blaster.h"
 
 ABlasterCharacter::ABlasterCharacter()
 {
@@ -49,6 +50,8 @@ ABlasterCharacter::ABlasterCharacter()
 	/* Camera랑 메시 충돌 방지*/
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
+	GetMesh()->SetCollisionObjectType(ECC_SkeletalMesh);
+	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 0.f, 850.f);
 
 	TurningInPlace = ETurningInPlace::ETIP_NotTurning;
@@ -261,6 +264,11 @@ void ABlasterCharacter::OnRep_OverlappingWeapon(AWeapon* LastWeapon)
 
 
 
+void ABlasterCharacter::MulticastHit_Implementation()
+{
+	PlayHitReactMontage();
+}
+
 /* 플레이어 제자리 턴 관리*/
 void ABlasterCharacter::TurnInPlace(float DeltaTime)
 {
@@ -395,6 +403,19 @@ void ABlasterCharacter::PlayFireMontage(bool bAiming)
 		/* FireWeaponMontage에서 조준하고 있으면 RifleAim, 아니면 RifleHip으로 섹션 넘어가서 플레이*/
 		SectionName = bAiming ? FName("RifleAim") : FName("RifleHip");
 		AnimInstance->Montage_JumpToSection(SectionName);
+	}
+}
+
+void ABlasterCharacter::PlayHitReactMontage()
+{
+	if (Combat == nullptr || Combat->EquippedWeapon == nullptr) return;
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance && HitReactMontage)
+	{
+		AnimInstance->Montage_Play(HitReactMontage);
+		FName SectionName("FromFront");
+		AnimInstance->Montage_JumpToSection(SectionName);
+		UE_LOG(LogTemp, Log, TEXT("Hi"));
 	}
 }
 

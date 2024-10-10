@@ -45,17 +45,11 @@ public:
 	/* 현재 Aim 하고 있는지*/
 	bool IsAiming();
 
-	/* AimOffset을 위한 Yaw, Pitch Getter*/
-	FORCEINLINE float GetAO_Yaw() const { return AO_Yaw; }
-	FORCEINLINE float GetAO_Pitch() const { return AO_Pitch; }
-
-	/* Turning을 위해 ETurningPlace Getter */
-	FORCEINLINE ETurningInPlace GetTurningInPlace() const { return TurningInPlace;}
-	
-	FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
-
+	UFUNCTION(NetMulticast, Unreliable)
+	void MulticastHit();
 	
 	void PlayFireMontage(bool bAiming);
+	void PlayHitReactMontage();
 protected:
 	
 	virtual void BeginPlay() override;
@@ -103,6 +97,11 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	TObjectPtr<UAnimMontage> FireWeaponMontage;
 
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	TObjectPtr<UAnimMontage> HitReactMontage;
+
+	
+
 	float AO_Yaw;
 	float InterpAO_Yaw;
 	float AO_Pitch;
@@ -130,7 +129,16 @@ private:
 	void InputFireReleased(const FInputActionValue& InValue);
 	void AimOffset(float DeltaTime);
 	virtual void Jump() override;
-	
+public:
+
+	/* AimOffset을 위한 Yaw, Pitch Getter*/
+	FORCEINLINE float GetAO_Yaw() const { return AO_Yaw; }
+	FORCEINLINE float GetAO_Pitch() const { return AO_Pitch; }
+
+	/* Turning을 위해 ETurningPlace Getter */
+	FORCEINLINE ETurningInPlace GetTurningInPlace() const { return TurningInPlace; }
+
+	FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 	
 
 };
