@@ -95,7 +95,7 @@ void ABlasterCharacter::PostInitializeComponents()
 void ABlasterCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
+	/*
 	APlayerController* PlayerController = Cast<APlayerController>(GetController());
 	if (IsValid(PlayerController) == true)
 	{
@@ -105,11 +105,22 @@ void ABlasterCharacter::BeginPlay()
 			Subsystem->AddMappingContext(PlayerCharacterInputMappingContext, 0);
 		}
 	}
-
-	BlasterPlayerController = Cast<ABlasterMainController>(Controller);
-	if (BlasterPlayerController)
+	*/
+	BlasterPlayerController = BlasterPlayerController == nullptr ? Cast<ABlasterMainController>(Controller) : BlasterPlayerController;
+	if (IsValid(BlasterPlayerController) == true)
 	{
+
+		UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(BlasterPlayerController->GetLocalPlayer());
+		if (IsValid(Subsystem) == true)
+		{
+			Subsystem->AddMappingContext(PlayerCharacterInputMappingContext, 0);
+		}
+
 		BlasterPlayerController->SetHUDHealth(Health, MaxHealth);
+	}
+	if (HasAuthority())
+	{
+		OnTakeAnyDamage.AddDynamic(this, &ABlasterCharacter::ReceiveDamage);
 	}
 	
 }
@@ -143,7 +154,8 @@ float ABlasterCharacter::CalculateSpeed()
 
 void ABlasterCharacter::OnRep_Health()
 {
-
+	UpdateHUDHealth();
+	PlayHitReactMontage();
 }
 
 //////////////////////////////////Basic Input /////////////////////////////////////////////////
@@ -293,11 +305,6 @@ void ABlasterCharacter::OnRep_OverlappingWeapon(AWeapon* LastWeapon)
 }
 
 
-
-void ABlasterCharacter::MulticastHit_Implementation()
-{
-	PlayHitReactMontage();
-}
 
 /* 플레이어 제자리 턴 관리*/
 void ABlasterCharacter::TurnInPlace(float DeltaTime)
@@ -502,6 +509,22 @@ void ABlasterCharacter::PlayHitReactMontage()
 		FName SectionName("FromFront");
 		AnimInstance->Montage_JumpToSection(SectionName);
 		UE_LOG(LogTemp, Log, TEXT("Hi"));
+	}
+}
+
+void ABlasterCharacter::ReceiveDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatorController, AActor* DamageCauser)
+{
+	Health = FMath::Clamp(Health - Damage, 0.f, MaxHealth);
+	UpdateHUDHealth();
+	PlayHitReactMontage();
+}
+
+void ABlasterCharacter::UpdateHUDHealth()
+{
+	BlasterPlayerController = BlasterPlayerController == nullptr ? Cast<ABlasterMainController>(Controller) : BlasterPlayerController;
+	if (BlasterPlayerController)
+	{
+		BlasterPlayerController->SetHUDHealth(Health, MaxHealth);
 	}
 }
 

@@ -46,13 +46,14 @@ public:
 	/* 현재 Aim 하고 있는지*/
 	bool IsAiming();
 
-	UFUNCTION(NetMulticast, Unreliable)
-	void MulticastHit();
-
 	virtual void OnRep_ReplicatedMovement() override;
 	
 	void PlayFireMontage(bool bAiming);
 	void PlayHitReactMontage();
+
+	UFUNCTION()
+	void ReceiveDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, class AController* InstigatorController, AActor* DamageCauser);
+	void UpdateHUDHealth();
 protected:
 	
 	virtual void BeginPlay() override;
