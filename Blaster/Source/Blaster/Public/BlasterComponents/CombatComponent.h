@@ -45,6 +45,8 @@ protected:
 	UFUNCTION()
 	void FireButtonPressed(bool bPressed);
 
+	void Fire();
+
 	UFUNCTION(Server, Reliable)
 	void ServerFire(const FVector_NetQuantize& TraceHitTarget);
 
@@ -97,4 +99,18 @@ protected:
 	float CrossHairInAirFactor;
 	float CrossHairAimFactor;
 	float CrossHairShootingFactor;
+
+
+	/* Auto »ç°Ý */
+
+	FTimerHandle FireTimer;
+
+	
+
+	bool bCanFire = true;
+
+
+	void StartFireTimer();
+	void FireTimerFinished();
+
 };

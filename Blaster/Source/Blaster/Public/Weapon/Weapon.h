@@ -66,6 +66,12 @@ public:
 	UPROPERTY(EditAnywhere)
 	float ZoomInterpSpeed = 20.f;
 
+	UPROPERTY(EditAnywhere, Category = Combat)
+	float FireDelay = 0.15f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Combat)
+	bool bAutomatic = true;
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -113,7 +119,7 @@ protected:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<ACasing> CasingClass;
 
-
+	
 
 
 public:

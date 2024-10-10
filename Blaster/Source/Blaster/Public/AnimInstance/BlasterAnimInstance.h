@@ -72,4 +72,6 @@ private:
 	UPROPERTY(BlueprintReadOnly, Category = "Movement", meta = (AllowPrivateAccess))
 	ETurningInPlace TurningInPlace;
 	
+	UPROPERTY(BlueprintReadOnly, Category = "Movement", meta = (AllowPrivateAccess))
+	bool bRotateRootBone;
 };

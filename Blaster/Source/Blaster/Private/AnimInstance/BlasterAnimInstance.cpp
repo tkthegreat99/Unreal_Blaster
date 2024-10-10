@@ -49,6 +49,7 @@ void UBlasterAnimInstance::NativeUpdateAnimation(float DeltaTime)
 		// 캐릭터가 회전 중인지 (In-Place Turn) 상태 저장
 		TurningInPlace = BlasterCharacter->GetTurningInPlace();
 
+		bRotateRootBone = BlasterCharacter->ShouldRotateRootBone();
 		// 캐릭터의 에임(Aim) 회전 값을 가져옴
 		FRotator AimRotation = BlasterCharacter->GetBaseAimRotation();
 

@@ -13,6 +13,7 @@
 #include "Controller/BlasterMainController.h"
 #include "Widget/BlasterHUD.h"
 #include "Camera/CameraComponent.h"
+#include "TimerManager.h"
 
 
 
@@ -39,9 +40,34 @@ void UCombatComponent::BeginPlay()
 			DefaultFOV = Character->GetFollowCamera()->FieldOfView;
 			CurrentFOV = DefaultFOV;
 		}
-	}
-	
+	}	
 }
+
+void UCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+{
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	SetHUDCrosshairs(DeltaTime);
+
+	if (Character && Character->IsLocallyControlled())
+	{
+		FHitResult HitResult;
+		TraceUnderCrosshairs(HitResult);
+		HitTarget = HitResult.ImpactPoint;
+
+		InterpFOV(DeltaTime);
+	}
+
+}
+
+void UCombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(UCombatComponent, EquippedWeapon);
+	DOREPLIFETIME(UCombatComponent, bAiming);
+}
+
 
 //////////////////////////// Equip ////////////////////////////////////////////
 
@@ -102,6 +128,7 @@ void UCombatComponent::ServerSetAiming_Implementation(bool bIsAiming)
 
 ///////////////////////////////// Trace //////////////////////////////////////////////////
 
+/* 크로스헤어 조준*/
 void UCombatComponent::TraceUnderCrosshairs(FHitResult& TraceHitResult)
 {
 	FVector2D ViewportSize;
@@ -155,6 +182,7 @@ void UCombatComponent::TraceUnderCrosshairs(FHitResult& TraceHitResult)
 
 }
 
+/* 무기가 있을 때 크로스헤어 표시 및 퍼짐도 계산*/
 void UCombatComponent::SetHUDCrosshairs(float DeltaTime)
 {
 	if (Character == nullptr || Character->Controller == nullptr) return;
@@ -229,6 +257,7 @@ void UCombatComponent::SetHUDCrosshairs(float DeltaTime)
 	}
 }
 
+/* 조준 시 카메라 줌*/
 void UCombatComponent::InterpFOV(float DeltaTime)
 {
 	if (EquippedWeapon == nullptr) return;
@@ -249,6 +278,8 @@ void UCombatComponent::InterpFOV(float DeltaTime)
 	}
 }
 
+
+
 ///////////////////////////////// Fire //////////////////////////////////////////////////
 
 // Fire -> Server Fire -> Multicast Fire 
@@ -262,18 +293,51 @@ void UCombatComponent::FireButtonPressed(bool bPressed)
 
 	if (bFireButtonPressed)
 	{
-		FHitResult HitResult;
-		TraceUnderCrosshairs(HitResult);
+		if (EquippedWeapon)
+		{
+			Fire();
+		}
+	}
 
-		//Trace한 HitResult결과를 ServerFire에 전달
-		ServerFire(HitResult.ImpactPoint);
+}
+
+void UCombatComponent::Fire()
+{
+	if (bCanFire) 
+	{
+		bCanFire = false;
+		ServerFire(HitTarget);
 
 		if (EquippedWeapon)
 		{
 			CrossHairShootingFactor = 0.75f;
 		}
+		StartFireTimer();
 	}
+	
+}
 
+void UCombatComponent::StartFireTimer()
+{
+	if (EquippedWeapon == nullptr || Character == nullptr) return;
+
+	UE_LOG(LogTemp, Log, TEXT("StartFireTimer"));
+	Character->GetWorldTimerManager().SetTimer(
+		FireTimer,
+		this,
+		&UCombatComponent::FireTimerFinished,
+		EquippedWeapon->FireDelay
+	);
+}
+
+void UCombatComponent::FireTimerFinished()
+{
+	if (EquippedWeapon == nullptr) return;
+	bCanFire = true;
+	if (bFireButtonPressed && EquippedWeapon->bAutomatic)
+	{
+		Fire();
+	}
 }
 
 // FVector_NetQuantize& : 3차원 벡터의 데이터를 압축하여 네트워크 트래픽을 절약하기 위해 사용
@@ -295,29 +359,5 @@ void UCombatComponent::MulticastFire_Implementation(const FVector_NetQuantize& T
 
 
 
-
-void UCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	SetHUDCrosshairs(DeltaTime);
-	
-	if (Character && Character->IsLocallyControlled())
-	{
-		FHitResult HitResult;
-		TraceUnderCrosshairs(HitResult);
-		HitTarget = HitResult.ImpactPoint;
-
-		InterpFOV(DeltaTime);
-	}
-}
-
-void UCombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
-{
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
-	DOREPLIFETIME(UCombatComponent, EquippedWeapon);
-	DOREPLIFETIME(UCombatComponent, bAiming);
-}
 
 
