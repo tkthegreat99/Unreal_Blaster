@@ -17,6 +17,7 @@ class UWidgetComponent;
 class AWeapon;
 class UCombatComponent;
 class UAnimMontage;
+class ABlasterMainController;
 
 UCLASS()
 class BLASTER_API ABlasterCharacter : public ACharacter, public IInteractWithCrossHairsInterface
@@ -125,6 +126,20 @@ protected:
 	float ProxyYaw;
 	float TimeSinceLastMovementReplication;
 	float CalculateSpeed();
+
+	/* Player Health */
+
+	UPROPERTY(EditAnywhere, Category = "PlayerState")
+	float MaxHealth = 100.f;
+
+	UPROPERTY(ReplicatedUsing = OnRep_Health, VisibleAnywhere, Category = "PlayerState")
+	float Health = 100.f;
+
+	UFUNCTION()
+	void OnRep_Health();
+
+	TObjectPtr<ABlasterMainController> BlasterPlayerController;
+
 private:
 
 	/* Input */

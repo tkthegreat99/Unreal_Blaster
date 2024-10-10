@@ -18,6 +18,7 @@
 #include "AnimInstance/BlasterAnimInstance.h"
 #include "Animation/AnimInstance.h"
 #include "Blaster/Blaster.h"
+#include "Controller/BlasterMainController.h"
 
 ABlasterCharacter::ABlasterCharacter()
 {
@@ -105,6 +106,11 @@ void ABlasterCharacter::BeginPlay()
 		}
 	}
 
+	BlasterPlayerController = Cast<ABlasterMainController>(Controller);
+	if (BlasterPlayerController)
+	{
+		BlasterPlayerController->SetHUDHealth(Health, MaxHealth);
+	}
 	
 }
 
@@ -133,6 +139,11 @@ float ABlasterCharacter::CalculateSpeed()
 	FVector Velocity = GetVelocity();
 	Velocity.Z = 0.f;
 	return Velocity.Size();
+}
+
+void ABlasterCharacter::OnRep_Health()
+{
+
 }
 
 //////////////////////////////////Basic Input /////////////////////////////////////////////////
@@ -434,6 +445,7 @@ void ABlasterCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME_CONDITION(ABlasterCharacter, OverlappingWeapon, COND_OwnerOnly);
+	DOREPLIFETIME(ABlasterCharacter, Health);
 }
 
 

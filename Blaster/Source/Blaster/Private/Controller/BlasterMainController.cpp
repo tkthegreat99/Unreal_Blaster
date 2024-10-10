@@ -2,4 +2,33 @@
 
 
 #include "Controller/BlasterMainController.h"
+#include "Widget/BlasterHUD.h"
+#include "Widget/CharacterOverlay.h"
+#include "Components/ProgressBar.h"
+#include "Components/TextBlock.h"
 
+
+
+void ABlasterMainController::BeginPlay()
+{
+	Super::BeginPlay();
+
+	BlasterHUD = Cast<ABlasterHUD>(GetHUD());
+}
+
+void ABlasterMainController::SetHUDHealth(float Health, float MaxHealth)
+{
+	BlasterHUD = BlasterHUD == nullptr ? Cast<ABlasterHUD>(GetHUD()) : BlasterHUD;
+	bool HUDValid = BlasterHUD && 
+		BlasterHUD->CharacterOverlay && 
+		BlasterHUD->CharacterOverlay->HealthBar && 
+		BlasterHUD->CharacterOverlay->HealthText;
+
+	if (HUDValid)
+	{
+		const float HealthPercent = Health / MaxHealth;
+		BlasterHUD->CharacterOverlay->HealthBar->SetPercent(HealthPercent);
+		FString HealthText = FString::Printf(TEXT("%d/%d"), FMath::CeilToInt(Health), FMath::CeilToInt(MaxHealth));
+		BlasterHUD->CharacterOverlay->HealthText->SetText(FText::FromString(HealthText));
+	}
+}
