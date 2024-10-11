@@ -51,9 +51,10 @@ public:
 	void PlayFireMontage(bool bAiming);
 	void PlayHitReactMontage();
 	void PlayElimMontage();
+	void Elim();
 
 	UFUNCTION(NetMulticast, Reliable)
-	void Elim();
+	void MulticastElim();
 
 	UFUNCTION()
 	void ReceiveDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, class AController* InstigatorController, AActor* DamageCauser);
@@ -150,6 +151,13 @@ protected:
 	TObjectPtr<ABlasterMainController> BlasterPlayerController;
 
 	bool bEliminated = false;
+
+	FTimerHandle ElimTimer;
+
+	UPROPERTY(EditDefaultsOnly)
+	float ElimDelay = 3.f;
+
+	void ElimTimerFinished();
 
 private:
 

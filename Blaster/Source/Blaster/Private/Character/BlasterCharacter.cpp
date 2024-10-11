@@ -20,6 +20,7 @@
 #include "Blaster/Blaster.h"
 #include "Controller/BlasterMainController.h"
 #include "Game/BlasterGameMainMode.h"
+#include "TimerManager.h"
 
 ABlasterCharacter::ABlasterCharacter()
 {
@@ -158,6 +159,7 @@ void ABlasterCharacter::OnRep_Health()
 	UpdateHUDHealth();
 	PlayHitReactMontage();
 }
+
 
 //////////////////////////////////Basic Input /////////////////////////////////////////////////
 void ABlasterCharacter::InputMove(const FInputActionValue& InValue)
@@ -522,6 +524,26 @@ void ABlasterCharacter::PlayElimMontage()
 	UE_LOG(LogTemp, Log, TEXT("Play ElimMontage"));
 }
 
+void ABlasterCharacter::Elim()
+{
+	MulticastElim();
+	GetWorldTimerManager().SetTimer(
+		ElimTimer,
+		this,
+		&ABlasterCharacter::ElimTimerFinished,
+		ElimDelay
+	);
+}
+
+void ABlasterCharacter::ElimTimerFinished()
+{
+	ABlasterGameMainMode* BlasterGameMode = GetWorld()->GetAuthGameMode<ABlasterGameMainMode>();
+	if (BlasterGameMode)
+	{
+		BlasterGameMode->RequestRespawn(this, Controller);
+	}
+}
+
 void ABlasterCharacter::ReceiveDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatorController, AActor* DamageCauser)
 {
 	Health = FMath::Clamp(Health - Damage, 0.f, MaxHealth);
@@ -550,7 +572,7 @@ void ABlasterCharacter::UpdateHUDHealth()
 	}
 }
 
-void ABlasterCharacter::Elim_Implementation()
+void ABlasterCharacter::MulticastElim_Implementation()
 {
 	bEliminated = true;
 	PlayElimMontage();
