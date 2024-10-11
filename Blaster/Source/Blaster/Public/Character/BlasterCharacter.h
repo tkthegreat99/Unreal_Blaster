@@ -50,6 +50,10 @@ public:
 	
 	void PlayFireMontage(bool bAiming);
 	void PlayHitReactMontage();
+	void PlayElimMontage();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void Elim();
 
 	UFUNCTION()
 	void ReceiveDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, class AController* InstigatorController, AActor* DamageCauser);
@@ -97,12 +101,16 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UCombatComponent> Combat;
 
-	/* น฿ป็ Montage */
+	/*Montage */
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	TObjectPtr<UAnimMontage> FireWeaponMontage;
 
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	TObjectPtr<UAnimMontage> HitReactMontage;
+
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	TObjectPtr<UAnimMontage> ElimMontage;
+
 
 	
 
@@ -141,6 +149,8 @@ protected:
 
 	TObjectPtr<ABlasterMainController> BlasterPlayerController;
 
+	bool bEliminated = false;
+
 private:
 
 	/* Input */
@@ -167,7 +177,7 @@ public:
 
 	FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 	FORCEINLINE bool ShouldRotateRootBone() const { return bRotateRootBone; }
-
+	FORCEINLINE bool IsEliminated() const { return bEliminated; }
 	
 
 };

@@ -50,6 +50,8 @@ void UBlasterAnimInstance::NativeUpdateAnimation(float DeltaTime)
 		TurningInPlace = BlasterCharacter->GetTurningInPlace();
 
 		bRotateRootBone = BlasterCharacter->ShouldRotateRootBone();
+
+		bEliminated = BlasterCharacter->IsEliminated();
 		// 캐릭터의 에임(Aim) 회전 값을 가져옴
 		FRotator AimRotation = BlasterCharacter->GetBaseAimRotation();
 

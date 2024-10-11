@@ -19,6 +19,7 @@
 #include "Animation/AnimInstance.h"
 #include "Blaster/Blaster.h"
 #include "Controller/BlasterMainController.h"
+#include "Game/BlasterGameMainMode.h"
 
 ABlasterCharacter::ABlasterCharacter()
 {
@@ -508,8 +509,17 @@ void ABlasterCharacter::PlayHitReactMontage()
 		AnimInstance->Montage_Play(HitReactMontage);
 		FName SectionName("FromFront");
 		AnimInstance->Montage_JumpToSection(SectionName);
-		UE_LOG(LogTemp, Log, TEXT("Hi"));
 	}
+}
+
+void ABlasterCharacter::PlayElimMontage()
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance && ElimMontage)
+	{
+		AnimInstance->Montage_Play(ElimMontage);
+	}
+	UE_LOG(LogTemp, Log, TEXT("Play ElimMontage"));
 }
 
 void ABlasterCharacter::ReceiveDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatorController, AActor* DamageCauser)
@@ -517,6 +527,18 @@ void ABlasterCharacter::ReceiveDamage(AActor* DamagedActor, float Damage, const 
 	Health = FMath::Clamp(Health - Damage, 0.f, MaxHealth);
 	UpdateHUDHealth();
 	PlayHitReactMontage();
+
+	if (Health == 0.0f)
+	{
+		ABlasterGameMainMode* BlasterGameMode = GetWorld()->GetAuthGameMode<ABlasterGameMainMode>();
+		if (BlasterGameMode)
+		{
+			BlasterPlayerController = BlasterPlayerController == nullptr ? Cast<ABlasterMainController>(Controller) : BlasterPlayerController;
+			ABlasterMainController* AttackerController = Cast<ABlasterMainController>(InstigatorController);
+			BlasterGameMode->PlayerEliminated(this, BlasterPlayerController, AttackerController);
+		}
+	}
+	
 }
 
 void ABlasterCharacter::UpdateHUDHealth()
@@ -526,5 +548,11 @@ void ABlasterCharacter::UpdateHUDHealth()
 	{
 		BlasterPlayerController->SetHUDHealth(Health, MaxHealth);
 	}
+}
+
+void ABlasterCharacter::Elim_Implementation()
+{
+	bEliminated = true;
+	PlayElimMontage();
 }
 
