@@ -38,6 +38,7 @@ public:
 
 	//Weapon을 상속받는 ProjectileWeapon에서 Fire 오버라이딩
 	virtual void Fire(const FVector& HitTarget);
+	void Dropped();
 
 
 public:

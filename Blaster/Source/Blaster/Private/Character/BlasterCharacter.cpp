@@ -21,7 +21,7 @@
 #include "Controller/BlasterMainController.h"
 #include "Game/BlasterGameMainMode.h"
 #include "TimerManager.h"
-
+#include "Kismet/KismetSystemLibrary.h"
 ABlasterCharacter::ABlasterCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -97,17 +97,7 @@ void ABlasterCharacter::PostInitializeComponents()
 void ABlasterCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	/*
-	APlayerController* PlayerController = Cast<APlayerController>(GetController());
-	if (IsValid(PlayerController) == true)
-	{
-		UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
-		if (IsValid(Subsystem) == true)
-		{
-			Subsystem->AddMappingContext(PlayerCharacterInputMappingContext, 0);
-		}
-	}
-	*/
+	
 	BlasterPlayerController = BlasterPlayerController == nullptr ? Cast<ABlasterMainController>(Controller) : BlasterPlayerController;
 	if (IsValid(BlasterPlayerController) == true)
 	{
@@ -117,6 +107,7 @@ void ABlasterCharacter::BeginPlay()
 		{
 			Subsystem->AddMappingContext(PlayerCharacterInputMappingContext, 0);
 		}
+		
 
 		BlasterPlayerController->SetHUDHealth(Health, MaxHealth);
 	}
@@ -520,12 +511,18 @@ void ABlasterCharacter::PlayElimMontage()
 	if (AnimInstance && ElimMontage)
 	{
 		AnimInstance->Montage_Play(ElimMontage);
+		//UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Montage Played"));
 	}
-	UE_LOG(LogTemp, Log, TEXT("Play ElimMontage"));
 }
 
 void ABlasterCharacter::Elim()
 {
+	if (Combat && Combat->EquippedWeapon)
+	{
+		Combat->EquippedWeapon->Dropped();
+	}
+
+
 	MulticastElim();
 	GetWorldTimerManager().SetTimer(
 		ElimTimer,
@@ -550,7 +547,7 @@ void ABlasterCharacter::ReceiveDamage(AActor* DamagedActor, float Damage, const 
 	UpdateHUDHealth();
 	PlayHitReactMontage();
 
-	if (Health == 0.0f)
+	if (Health == 0.0f )
 	{
 		ABlasterGameMainMode* BlasterGameMode = GetWorld()->GetAuthGameMode<ABlasterGameMainMode>();
 		if (BlasterGameMode)
@@ -576,5 +573,13 @@ void ABlasterCharacter::MulticastElim_Implementation()
 {
 	bEliminated = true;
 	PlayElimMontage();
+	GetCharacterMovement()->DisableMovement();
+	GetCharacterMovement()->StopMovementImmediately();
+	if (BlasterPlayerController)
+	{
+		DisableInput(BlasterPlayerController);
+	}
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
